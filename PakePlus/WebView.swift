@@ -53,13 +53,14 @@ struct WebView: UIViewRepresentable {
             webView.configuration.userContentController.addUserScript(userScript)
         }
 
-        // load url
-        // webView.load(URLRequest(url: url))
-        // 加载本地文件
-        print("bundle main url: \(String(describing: Bundle.main.resourcePath))")
-        if let url = Bundle.main.url(forResource: "index", withExtension: "html") {
-            let readAccessURL = url.deletingLastPathComponent()
-            webView.loadFileURL(url, allowingReadAccessTo: readAccessURL)
+        if webUrl.host?.contains("pakeplus.com") == true {
+            // load html file
+            if let url = Bundle.main.url(forResource: "index", withExtension: "html") {
+                webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+            }
+        } else {
+            // load url
+            webView.load(URLRequest(url: webUrl))
         }
 
         // delegate 设置
@@ -77,9 +78,9 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        // let request = URLRequest(url: url)
-        // print("updateUIView: \(request.url?.absoluteString ?? "")")
-        // uiView.load(request)
+        let request = URLRequest(url: webUrl)
+        print("updateUIView: \(request.url?.absoluteString ?? "")")
+        uiView.load(request)
     }
 
     // add coordinator to prevent zoom
